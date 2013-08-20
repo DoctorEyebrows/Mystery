@@ -10,8 +10,9 @@ class Model():
         parser.start()
     
 class Book():
-    def __init__(self,title,genre):
+    def __init__(self,title,author,genre):
         self.title = title
+        self.author = author
         self.genre = genre
 
 
@@ -56,6 +57,12 @@ class Parser(threading.Thread):
             start = html.find(">",start) + 1
             end = html.find("<",start)
             title = html[start:end]
+
+            #extract author:
+            start = html.find("iblist.com/author")
+            start = html.find(">",start) + 1
+            end = html.find("<",start)
+            author = html[start:end]
             
             #extract genres:
             start = html.find("<i>Genre:</i> ") + 14
@@ -73,10 +80,10 @@ class Parser(threading.Thread):
             genre = genreString.split("&rarr;")
             genre = map(str.strip,genre)
             
-            print title, genre
             if genre[0] == "Fiction":
                 del genre[0]    #they're all meant to be fiction anyway
-                book = Book(title,genre)
+                print "%s\n%s\n%s\n\n" % (title, author, genre)
+                book = Book(title,author,genre)
                 model.books.append(book)
                 
 
