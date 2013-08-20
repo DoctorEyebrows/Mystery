@@ -1,13 +1,32 @@
-import threading, Queue, urllib2
+import threading, Queue, urllib2, pickle, time
 
 class Model():
     def __init__(self):
-        crawler = Crawler(name="Crawler")
+        crawler = Crawler(self)
         parser = Parser(self)
-        self.books = []
+        saver = PeriodicAutosave(self)
+        saver.daemon = True
+
+        try:
+            self.load()
+        except:
+            self.books = []
 
         crawler.start()
         parser.start()
+        saver.start()
+
+    def save(self):
+        fout = open("library.db",'wb')
+        pickle.dump(self.books,fout)
+        fout.close()
+
+    def load(self):
+        fin = open("library.db",'rb')
+        self.books = pickle.load(fin)
+        fin.close()
+
+        print "Loaded", len(self.books), "books"
     
 class Book():
     def __init__(self,title,author,genre):
@@ -21,8 +40,12 @@ class Crawler(threading.Thread):
     Thread that downloads book summary pages from www.iblist.com
     """
 
+    def __init__(self,model):
+        threading.Thread.__init__(self,name="Crawler")
+        self.model = model
+
     def run(self):
-        i = 1
+        i = len(self.model.books) + 1
         consecutiveHoles = 0
         while True:
             page = urllib2.urlopen("http://www.iblist.com/book%i.htm" % i)
@@ -86,6 +109,20 @@ class Parser(threading.Thread):
                 book = Book(title,author,genre)
                 model.books.append(book)
                 
+class PeriodicAutosave(threading.Thread):
+    """
+    Triggers model.save() every 10 seconds
+    """
+
+    def __init__(self,model):
+        threading.Thread.__init__(self,name="Autosave")
+        self.model = model
+    
+    def run(self):
+        while True:
+            time.sleep(10)
+            self.model.save()
+
 
 if __name__ == "__main__":
     pageQueue = Queue.Queue()
