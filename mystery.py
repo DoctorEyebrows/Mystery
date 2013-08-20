@@ -4,11 +4,16 @@ class Model():
     def __init__(self):
         crawler = Crawler(name="Crawler")
         parser = Parser(self)
+        self.books = []
 
         crawler.start()
         parser.start()
     
-    
+class Book():
+    def __init__(self,title,genre):
+        self.title = title
+        self.genre = genre
+
 
 class Crawler(threading.Thread):
     """
@@ -50,7 +55,9 @@ class Parser(threading.Thread):
                 end = genreString.find(">",start) + 1
                 genreString = genreString[:start] + genreString[end:] #snip
 
-            print genreString.split("&rarr;")
+            genre = genreString.split("&rarr;")
+            genre = map(str.strip,genre)
+            print genre
 
 if __name__ == "__main__":
     pageQueue = Queue.Queue()
