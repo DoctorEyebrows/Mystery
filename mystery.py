@@ -74,6 +74,11 @@ class Parser(threading.Thread):
             genre = map(str.strip,genre)
             
             print title, genre
+            if genre[0] == "Fiction":
+                del genre[0]    #they're all meant to be fiction anyway
+                book = Book(title,genre)
+                model.books.append(book)
+                
 
 if __name__ == "__main__":
     pageQueue = Queue.Queue()
