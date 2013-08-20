@@ -22,15 +22,21 @@ class Crawler(threading.Thread):
 
     def run(self):
         i = 1
+        consecutiveHoles = 0
         while True:
             page = urllib2.urlopen("http://www.iblist.com/book%i.htm" % i)
             html = page.read()
             if html != "Error: No book found.":
                 pageQueue.put(html)
+                consecutiveHoles = 0
             else:
                 print "Error: No book found", i
-                break
+                consecutiveHoles += 1
+                if consecutiveHoles >= 100:
+                    break
             i += 1
+            
+        print "I think we're finished now. No more books."
             
 class Parser(threading.Thread):
     """
