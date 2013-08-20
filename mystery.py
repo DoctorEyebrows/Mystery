@@ -28,7 +28,9 @@ class Crawler(threading.Thread):
             if html != "Error: No book found.":
                 pageQueue.put(html)
             else:
+                print "Error: No book found", i
                 break
+            i += 1
             
 class Parser(threading.Thread):
     """
@@ -42,7 +44,14 @@ class Parser(threading.Thread):
     def run(self):
         while True:
             html = pageQueue.get(block=True)
+
+            #extract title:
+            start = html.find("<a class=")
+            start = html.find(">",start) + 1
+            end = html.find("<",start)
+            title = html[start:end]
             
+            #extract genres:
             start = html.find("<i>Genre:</i> ") + 14
             end = html.find("<br />",start)
             genreString = html[start:end]
@@ -57,7 +66,8 @@ class Parser(threading.Thread):
 
             genre = genreString.split("&rarr;")
             genre = map(str.strip,genre)
-            print genre
+            
+            print title, genre
 
 if __name__ == "__main__":
     pageQueue = Queue.Queue()
