@@ -5,6 +5,11 @@ class Model():
         crawler = Crawler(self)
         parser = Parser(self)
         saver = PeriodicAutosave(self)
+        #making the threads daemonic ensures everything terminates when i
+        #close the IDLE shell
+        #may become unnecessary when there's a GUI to terminate them properly
+        crawler.daemon = True
+        parser.daemon = True
         saver.daemon = True
 
         try:
