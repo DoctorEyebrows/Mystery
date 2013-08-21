@@ -70,7 +70,7 @@ class Parser(threading.Thread):
             
             if genre[0] == "Fiction":
                 del genre[0]    #they're all meant to be fiction anyway
-                print "%s\n%s\n%s\n\n" % (title, author, genre)
+                #print "%s\n%s\n%s\n\n" % (title, author, genre)
                 book = Book(title,author,genre)
                 self.model.books.append(book)
                 
