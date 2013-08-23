@@ -6,8 +6,9 @@ import logging
 class MyFrame(wx.Frame):
     def __init__(self,parent,ID,title):
         wx.Frame.__init__(self,parent,ID,title,size=(500,300))
-        self.Show(True)
+        self.SetBackgroundColour((190,190,190))
 
+        #CREATE WIDGETS
         self.textbox = wx.TextCtrl(parent=self,id=wx.ID_ANY,
                                    style=wx.TE_MULTILINE|wx.TE_READONLY,
                                    size=(300,300))
@@ -16,6 +17,7 @@ class MyFrame(wx.Frame):
         self.bReveal = wx.Button(parent=self, id=wx.ID_ANY,
                                  label="Reveal")
 
+        #SPECIFY LAYOUT
         sizer1 = wx.BoxSizer(wx.HORIZONTAL)
         sizer2 = wx.BoxSizer(wx.VERTICAL)
         
@@ -24,7 +26,7 @@ class MyFrame(wx.Frame):
 
         spacer1 = wx.StaticText(parent=self)
         spacer2 = wx.StaticText(parent=self)
-        spacer3= wx.StaticText(parent=self)
+        spacer3 = wx.StaticText(parent=self)
 
         sizer2.Add(spacer1,2)
         sizer2.Add(self.bRandom,0,wx.ALIGN_CENTER)
@@ -35,6 +37,18 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer1)
         self.SetAutoLayout(True)
         sizer1.Fit(self)
+
+        #EVEND BINDING
+        self.Bind(wx.EVT_BUTTON, self.OnRandom, self.bRandom)
+        self.Bind(wx.EVT_BUTTON, self.OnReveal, self.bReveal)
+
+        self.Show(True)
+
+    def OnRandom(self,event):
+        print event
+
+    def OnReveal(self,event):
+        print event
     
 def main():
     logging.basicConfig(level=logging.INFO)
