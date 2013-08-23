@@ -9,20 +9,20 @@ class Model():
             self.books = []
 
         
-        crawler = Crawler(self)         #downloads book webpages
-        parser = Parser(self)           #extracts info, populates self.books
-        saver = PeriodicAutosave(self)  #calls self.save() every 10 seconds
+        self.crawler = Crawler(self)         #downloads book webpages
+        self.parser = Parser(self)           #extracts info, populates self.books
+        self.saver = PeriodicAutosave(self)  #calls self.save() every 10 seconds
         
         #making the threads daemonic ensures everything terminates when i
         #close the IDLE shell
         #may become unnecessary when there's a GUI to terminate them properly
-        crawler.daemon = True
-        parser.daemon = True
-        saver.daemon = True
+        self.crawler.daemon = True
+        self.parser.daemon = True
+        self.saver.daemon = True
         
-        crawler.start()
-        parser.start()
-        saver.start()
+        self.crawler.start()
+        self.parser.start()
+        self.saver.start()
 
     def getRandomBook(self):
         return random.choice(self.books)
@@ -59,6 +59,12 @@ class Model():
         fin.close()
 
         print "Loaded", len(self.books), "books"
+
+    def terminateThreads(self):
+        print "Terminating threads"
+        self.crawler.terminate()
+        self.parser.terminate()
+        self.saver.terminate()
         
 
 if __name__ == "__main__":

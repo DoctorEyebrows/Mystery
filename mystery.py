@@ -44,6 +44,7 @@ class MyFrame(wx.Frame):
         #EVEND BINDING
         self.Bind(wx.EVT_BUTTON, self.OnRandom, self.bRandom)
         self.Bind(wx.EVT_BUTTON, self.OnReveal, self.bReveal)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         self.Show(True)
 
@@ -52,6 +53,10 @@ class MyFrame(wx.Frame):
 
     def OnReveal(self,event):
         print event
+
+    def OnClose(self,event):
+        self.model.terminateThreads()
+        self.Destroy()
     
 def main():
     logging.basicConfig(level=logging.INFO)

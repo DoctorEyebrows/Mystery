@@ -8,11 +8,15 @@ class Crawler(threading.Thread):
     def __init__(self,model):
         threading.Thread.__init__(self,name="Crawler")
         self.model = model
+        self.die = False
 
     def run(self):
         i = len(self.model.books) + 1
         consecutiveHoles = 0
         while True:
+            if self.die:
+                break
+            
             page = urllib2.urlopen("http://www.iblist.com/book%i.htm" % i)
             html = page.read()
             if html != "Error: No book found.":
@@ -22,10 +26,16 @@ class Crawler(threading.Thread):
                 print "Error: No book found", i
                 consecutiveHoles += 1
                 if consecutiveHoles >= 100:
+                    print "I think we're finished now. No more books."
                     break
             i += 1
+
+        print self.name, "terminated"
+
+    def terminate(self):
+        self.die = True
             
-        print "I think we're finished now. No more books."
+        
             
 class Parser(threading.Thread):
     """
@@ -35,9 +45,13 @@ class Parser(threading.Thread):
     def __init__(self,model):
         threading.Thread.__init__(self,name="Parser")
         self.model = model
+        self.die = False
 
     def run(self):
         while True:
+            if self.die:
+                break
+            
             html = pageQueue.get(block=True)
 
             #extract title:
@@ -73,6 +87,11 @@ class Parser(threading.Thread):
                 #print "%s\n%s\n%s\n\n" % (title, author, genre)
                 book = Book(title,author,genre)
                 self.model.books.append(book)
+
+        print self.name, "terminated"
+
+    def terminate(self):
+        self.die = True
                 
 class PeriodicAutosave(threading.Thread):
     """
@@ -82,11 +101,20 @@ class PeriodicAutosave(threading.Thread):
     def __init__(self,model):
         threading.Thread.__init__(self,name="Autosave")
         self.model = model
+        self.die = False
     
     def run(self):
         while True:
             time.sleep(10)
+            if self.die:
+                break
+            
             self.model.save()
+
+        print self.name, "terminated"
+
+    def terminate(self):
+        self.die = True
 
 
 class Book():
