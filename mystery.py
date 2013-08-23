@@ -2,12 +2,15 @@
 
 import wx
 import logging
+from model import Model
 
 class MyFrame(wx.Frame):
     def __init__(self,parent,ID,title):
         wx.Frame.__init__(self,parent,ID,title,size=(500,300))
         self.SetBackgroundColour((190,190,190))
 
+        self.model = Model()
+        
         #CREATE WIDGETS
         self.textbox = wx.TextCtrl(parent=self,id=wx.ID_ANY,
                                    style=wx.TE_MULTILINE|wx.TE_READONLY,
