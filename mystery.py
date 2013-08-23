@@ -10,6 +10,7 @@ class MyFrame(wx.Frame):
         self.SetBackgroundColour((190,190,190))
 
         self.model = Model()
+        self.currentBook = None
         
         #CREATE WIDGETS
         self.textbox = wx.TextCtrl(parent=self,id=wx.ID_ANY,
@@ -49,10 +50,13 @@ class MyFrame(wx.Frame):
         self.Show(True)
 
     def OnRandom(self,event):
-        print event
+        self.currentBook = self.model.getRandomBook()
+        genreString = "\n".join(self.currentBook.genre)
+        self.textbox.SetValue(genreString)
 
     def OnReveal(self,event):
-        print event
+        self.textbox.SetValue(self.textbox.GetValue() +
+                              "\n\n" + self.currentBook.title)
 
     def OnClose(self,event):
         self.model.terminateThreads()
