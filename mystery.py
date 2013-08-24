@@ -11,6 +11,8 @@ class MyFrame(wx.Frame):
         self.SetBackgroundColour((190,190,190))
 
         self.model = Model()
+        global model
+        model = self.model
         self.currentBook = None
         pub.subscribe(self.onPub,"SAVED")
         
@@ -36,9 +38,9 @@ class MyFrame(wx.Frame):
         spacer3 = wx.StaticText(parent=self)
 
         sizer2.Add(spacer1,2)
-        sizer2.Add(self.bRandom,0,wx.ALIGN_CENTER)
+        sizer2.Add(self.bRandom,0,wx.GROW)
         sizer2.Add(spacer2,1)
-        sizer2.Add(self.bReveal,0,wx.ALIGN_CENTER)
+        sizer2.Add(self.bReveal,0,wx.GROW)
         sizer2.Add(spacer3,2)
 
         self.SetSizer(sizer1)
@@ -56,11 +58,13 @@ class MyFrame(wx.Frame):
         self.currentBook = self.model.getRandomBook()
         genreString = "\n".join(self.currentBook.genre)
         self.textbox.SetValue(genreString)
+        self.bReveal.Enable()
 
     def OnReveal(self,event):
         self.textbox.SetValue(self.textbox.GetValue() +
                               "\n\n" + self.currentBook.title +
                               "\nby " + self.currentBook.author)
+        self.bReveal.Disable()
 
     def onPub(self,message):
         self.statusBar.SetStatusText("Saved %i books" % message.data)
@@ -79,4 +83,5 @@ def main():
     
         
 if __name__ == "__main__":
+    model = None
     main()

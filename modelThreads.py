@@ -69,24 +69,20 @@ class Parser(threading.Thread):
                                                 #(no idea why but they're always there)
             
             #extract genres:
-            start = html.find("<i>Genre:</i> ") + 14
-            end = html.find("<br />",start)
-            genreString = html[start:end]
-
-            #remove tags from the html snippet we've excised:
-            while True:
-                start = genreString.find("<")
-                if start == -1:
-                    break
-                end = genreString.find(">",start) + 1
-                genreString = genreString[:start] + genreString[end:] #snip
-
-            genre = genreString.split("&rarr;")
-            genre = map(str.strip,genre)
+            genre = []
+            start = 0
+            while html.find("genre=",start) != -1:
+                start = html.find("genre=",start)
+                start = html.find(">",start) + 1
+                end = html.find("<",start)
+                genre.append(html[start:end])
             
-            if genre[0] == "Fiction":
-                del genre[0]    #they're all meant to be fiction anyway
-                #print "%s\n%s\n%s\n\n" % (title, author, genre)
+            
+            if genre[0] == "Fiction":   #filtering any non-fiction books
+                while "Fiction" in genre:
+                    genre.remove("Fiction") #they're all meant to be fiction
+                genre = set(genre)      #removing multiple occurances
+                genre = list(genre)
                 book = Book(title,author,genre)
                 self.model.books.append(book)
 
