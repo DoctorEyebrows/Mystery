@@ -65,6 +65,8 @@ class Parser(threading.Thread):
             start = html.find(">",start) + 1
             end = html.find("<",start)
             author = html[start:end]
+            author = author.replace("  "," ")   #get rid of double spaces
+                                                #(no idea why but they're always there)
             
             #extract genres:
             start = html.find("<i>Genre:</i> ") + 14

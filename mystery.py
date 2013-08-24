@@ -56,7 +56,8 @@ class MyFrame(wx.Frame):
 
     def OnReveal(self,event):
         self.textbox.SetValue(self.textbox.GetValue() +
-                              "\n\n" + self.currentBook.title)
+                              "\n\n" + self.currentBook.title +
+                              "\nby " + self.currentBook.author)
 
     def OnClose(self,event):
         self.model.terminateThreads()
