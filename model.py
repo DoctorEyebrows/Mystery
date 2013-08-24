@@ -1,5 +1,6 @@
 import pickle, random
 from modelThreads import Crawler, Parser, PeriodicAutosave
+from wx.lib.pubsub import Publisher as pub
 
 class Model():
     def __init__(self):
@@ -52,6 +53,7 @@ class Model():
         fout.close()
 
         print "Saved", len(self.books), "books"
+        pub.sendMessage("SAVED",len(self.books))
 
     def load(self):
         fin = open("library.db",'rb')

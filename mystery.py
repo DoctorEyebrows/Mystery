@@ -3,6 +3,7 @@
 import wx
 import logging
 from model import Model
+from wx.lib.pubsub import Publisher as pub
 
 class MyFrame(wx.Frame):
     def __init__(self,parent,ID,title):
@@ -11,6 +12,7 @@ class MyFrame(wx.Frame):
 
         self.model = Model()
         self.currentBook = None
+        pub.subscribe(self.onPub,"SAVED")
         
         #CREATE WIDGETS
         self.textbox = wx.TextCtrl(parent=self,id=wx.ID_ANY,
@@ -20,6 +22,7 @@ class MyFrame(wx.Frame):
                                  label="Random")
         self.bReveal = wx.Button(parent=self, id=wx.ID_ANY,
                                  label="Reveal")
+        self.statusBar = self.CreateStatusBar()
 
         #SPECIFY LAYOUT
         sizer1 = wx.BoxSizer(wx.HORIZONTAL)
@@ -58,6 +61,9 @@ class MyFrame(wx.Frame):
         self.textbox.SetValue(self.textbox.GetValue() +
                               "\n\n" + self.currentBook.title +
                               "\nby " + self.currentBook.author)
+
+    def onPub(self,message):
+        self.statusBar.SetStatusText("Saved %i books" % message.data)
 
     def OnClose(self,event):
         self.model.terminateThreads()
