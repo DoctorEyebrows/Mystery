@@ -78,9 +78,11 @@ class Parser(threading.Thread):
                 genre.append(html[start:end])
             
             
-            if genre[0] == "Fiction":   #filtering any non-fiction books
-                while "Fiction" in genre:
-                    genre.remove("Fiction") #they're all meant to be fiction
+            if genre == [] or genre[0] != "Fiction":
+                continue    #filtering any genre-less or non-fiction books
+            
+            while "Fiction" in genre:
+                genre.remove("Fiction") #they're all meant to be fiction
                 genre = set(genre)      #removing multiple occurances
                 genre = list(genre)
                 book = Book(title,author,genre)
