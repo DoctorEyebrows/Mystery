@@ -11,8 +11,6 @@ class MyFrame(wx.Frame):
         self.SetBackgroundColour((190,190,190))
 
         self.model = Model()
-        global model
-        model = self.model
         self.currentBook = None
         pub.subscribe(self.onPub,"SAVED")
         
@@ -61,9 +59,12 @@ class MyFrame(wx.Frame):
         self.bReveal.Enable()
 
     def OnReveal(self,event):
-        self.textbox.SetValue(self.textbox.GetValue() +
-                              "\n\n" + self.currentBook.title +
-                              "\nby " + self.currentBook.author)
+        try:
+            self.textbox.SetValue(self.textbox.GetValue() +
+                                  "\n\n" + self.currentBook.title +
+                                  "\nby " + self.currentBook.author)
+        except UnicodeDecodeError:
+            print self.currentBook.title
         self.bReveal.Disable()
 
     def onPub(self,message):
@@ -83,5 +84,4 @@ def main():
     
         
 if __name__ == "__main__":
-    model = None
     main()
