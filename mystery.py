@@ -45,6 +45,7 @@ class MyFrame(wx.Frame):
                                  label="Random")
         self.bReveal = wx.Button(parent=self, id=wx.ID_ANY,
                                  label="Reveal")
+        self.bReveal.Disable()
         self.statusBar = self.CreateStatusBar()
 
         #SPECIFY LAYOUT
